@@ -93,7 +93,7 @@ public class ServicioCarpeta {
         return respuesta;
     }
 
-    public static void main(String[] args) {
+   /* public static void main(String[] args) {
         ServicioCarpeta servicioCarpeta = new ServicioCarpeta();
         //servicioCarpeta.agregar(new Carpeta("Recibos", new Date()));
         //servicioCarpeta.eliminar("Recibos");
@@ -101,6 +101,6 @@ public class ServicioCarpeta {
         //Carpeta c = servicioCarpeta.buscarPorNombre("Facturas");
         //servicioCarpeta.listar();
         System.out.println(servicioCarpeta.listar());
-    }
+    }*/
 
 }

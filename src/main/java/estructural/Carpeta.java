@@ -13,6 +13,8 @@ public class Carpeta {
         this.fechaCreacion = fechaCreacion;
     }
 
+    public Carpeta(){}
+
     public String getNombre() {
         return nombre;
     }
