@@ -1,18 +1,19 @@
-package modelo;
+package co.ge.gestorDocumental.modelo;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
-import conexion.Conexion;
-import estructural.Carpeta;
-import estructural.Documento;
-import estructural.Version;
+import co.ge.gestorDocumental.conexion.Conexion;
+import co.ge.gestorDocumental.estructural.Carpeta;
+import co.ge.gestorDocumental.estructural.Documento;
+import co.ge.gestorDocumental.estructural.Version;
+import org.springframework.stereotype.Service;
 
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class ServicioVersion {
 
     private Conexion conexion;
@@ -23,7 +24,7 @@ public class ServicioVersion {
         this.instancia = this;
     }
 
-    public ServicioVersion getInstancia(){
+    public static ServicioVersion getInstancia(){
         if(instancia==null){
             instancia = new ServicioVersion();
         }
@@ -33,6 +34,16 @@ public class ServicioVersion {
     public boolean agregar(Version versionDocumento, Documento documentoRaiz){
         boolean respuesta = false;
         try {
+            Version versionMayor = obtenerVersionMayor(documentoRaiz);
+            if(versionMayor != null){
+                versionDocumento.setVersion(versionMayor.getVersion()+1);
+                versionDocumento.setEsVersionMayor(true);
+                versionMayor.setEsVersionMayor(false);
+                actualizar(versionMayor, documentoRaiz);
+            }else{
+                versionDocumento.setVersion(1);
+                versionDocumento.setEsVersionMayor(true);
+            }
             ApiFuture<WriteResult> future = conexion.getDb().collection("carpetas")
                     .document(documentoRaiz.getCarpetaRaiz())
                     .collection("archivos")
@@ -48,15 +59,15 @@ public class ServicioVersion {
         return respuesta;
     }
 
-    public boolean eliminar(Version versionDocuemnto, Documento documentoRaiz){
+    public boolean eliminar(Version versionDocumento, Documento documentoRaiz){
         boolean resultado = false;
         try {
             ApiFuture<WriteResult> writeResult = conexion.getDb().collection("carpetas")
                     .document(documentoRaiz.getCarpetaRaiz())
                     .collection("archivos")
-                    .document(versionDocuemnto.getDocumentoRaiz())
+                    .document(versionDocumento.getDocumentoRaiz())
                     .collection("versiones")
-                    .document(Integer.toString(versionDocuemnto.getVersion()))
+                    .document(Integer.toString(versionDocumento.getVersion()))
                     .delete();
             System.out.println("Update time : " + writeResult.get().getUpdateTime());
             resultado = true;
@@ -135,8 +146,18 @@ public class ServicioVersion {
         return respuesta;
     }
 
+    public Version obtenerVersionMayor(Documento documento){
+        List<Version> versiones = listar(documento);
+        for ( Version ver : versiones ) {
+            if(ver.isEsVersionMayor()){
+                return ver;
+            }
+        }
+        return null;
+    }
 
-    public static void main(String[] args) {
+
+    /*public static void main(String[] args) {
         ServicioDocumento servicioDocumento = new ServicioDocumento();
         ServicioCarpeta servicioCarpeta = new ServicioCarpeta();
         ServicioVersion servicioVersion = new ServicioVersion();
@@ -151,6 +172,6 @@ public class ServicioVersion {
         //Version ver1 = servicioVersion.buscarPorVersion(ver, doc1);
         ArrayList<Version> lista = servicioVersion.listar(doc1);
         System.out.println(lista);
-    }
+    }*/
 
 }

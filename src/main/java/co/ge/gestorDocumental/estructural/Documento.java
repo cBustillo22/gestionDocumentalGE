@@ -1,6 +1,5 @@
-package estructural;
+package co.ge.gestorDocumental.estructural;
 
-import javax.print.Doc;
 import java.util.Date;
 
 public class Documento {

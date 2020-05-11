@@ -1,4 +1,4 @@
-package estructural;
+package co.ge.gestorDocumental.estructural;
 
 import java.util.UUID;
 
@@ -17,6 +17,8 @@ public class Version {
         this.esVersionMayor = esVersionMayor;
         this.documentoRaiz = documentoRaiz;
     }
+
+    public Version(){}
 
     public UUID getUuid() {
         return uuid;

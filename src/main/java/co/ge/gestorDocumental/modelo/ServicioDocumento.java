@@ -1,26 +1,27 @@
-package modelo;
+package co.ge.gestorDocumental.modelo;
 
+import co.ge.gestorDocumental.estructural.Carpeta;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
-import conexion.Conexion;
-import estructural.Carpeta;
-import estructural.Documento;
+import co.ge.gestorDocumental.conexion.Conexion;
+import co.ge.gestorDocumental.estructural.Documento;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ServicioDocumento {
 
     private Conexion conexion;
     private static ServicioDocumento instancia;
+    private ServicioCarpeta servicioCarpeta;
 
     public ServicioDocumento() {
         this.conexion = Conexion.getInstance();
+        this.servicioCarpeta = ServicioCarpeta.getInstance();
         this.instancia = this;
     }
 
-    public ServicioDocumento getInstancia(){
+    public static ServicioDocumento getInstancia(){
         if (instancia==null){
             instancia= new ServicioDocumento();
         }
@@ -97,7 +98,7 @@ public class ServicioDocumento {
         return documentoEncontrado;
     }
 
-    public ArrayList<Documento> listar(String carpeta){
+    public ArrayList<Documento> listarPorCarpeta(String carpeta){
         ArrayList<Documento> respuesta = new ArrayList<>();
         try {
             ApiFuture<QuerySnapshot> query = conexion.getDb().collection("carpetas")
@@ -107,7 +108,7 @@ public class ServicioDocumento {
             QuerySnapshot querySnapshot = query.get();
             List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
             for (QueryDocumentSnapshot document : documents) {
-                Documento documento = new Documento(document.getString("nombre"),
+                Documento documento = new Documento(document.getString("carpetaRaiz"),
                         document.getString("nombre"),
                         document.getString("autor"),
                         document.getDouble("tamanio"),
@@ -121,6 +122,33 @@ public class ServicioDocumento {
             e.printStackTrace();
         }
         return respuesta;
+    }
+
+    public Documento buscar(String nombreDocumento){
+        List<Carpeta> carpetas = servicioCarpeta.listar();
+        Documento docEncontrado = null;
+        for (Carpeta carpeta:carpetas) {
+            Documento doc = new Documento();
+            doc.setCarpetaRaiz(carpeta.getNombre());
+            doc.setNombre(nombreDocumento);
+            docEncontrado = buscarPorNombre(doc);
+            if (docEncontrado!=null){
+                break;
+            }
+        }
+        return docEncontrado;
+    }
+
+    public List<Documento> listar(){
+        List<Carpeta> carpetas = servicioCarpeta.listar();
+        List<Documento> documentos = new ArrayList<Documento>();
+        for (Carpeta carpeta : carpetas) {
+            List<Documento> aux = listarPorCarpeta(carpeta.getNombre());
+            for (Documento doc:aux ) {
+                documentos.add(doc);
+            }
+        }
+        return documentos;
     }
 
     /*public static void main(String[] args) {
