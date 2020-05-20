@@ -4,6 +4,7 @@ import co.ge.gestorDocumental.estructural.Documento;
 import co.ge.gestorDocumental.estructural.Version;
 import co.ge.gestorDocumental.modelo.ServicioDocumento;
 import co.ge.gestorDocumental.modelo.ServicioVersion;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,9 +38,9 @@ public class VersionRESTController {
     }
 
     @PostMapping
-    public boolean agregar(@RequestBody Version version){
+    public ResponseEntity<Version> agregar(@RequestBody Version version){
         Documento doc = servicioDocumento.buscar(version.getDocumentoRaiz());
-        return servicioVersion.agregar(version, doc);
+        return ResponseEntity.ok().body(servicioVersion.agregar(version, doc));
     }
 
     @GetMapping(path = "/{nombreDocumento}/versionMayor")

@@ -26,16 +26,16 @@ public class ServicioCarpeta {
         return instancia;
     }
 
-    public boolean agregar(Carpeta carpeta){
+    public Carpeta agregar(Carpeta carpeta){
         boolean respuesta = false;
         try {
             ApiFuture<WriteResult> future = conexion.getDb().collection("carpetas").document(carpeta.getNombre()).set(carpeta);
             System.out.println("Update time : " + future.get().getUpdateTime());
-            respuesta=true;
+            return carpeta;
         }catch (Exception e){
             e.printStackTrace();
         }
-        return respuesta;
+        return null;
     }
 
     public boolean eliminar(String carpeta){

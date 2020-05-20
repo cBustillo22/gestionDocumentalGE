@@ -4,6 +4,7 @@ import co.ge.gestorDocumental.estructural.Carpeta;
 import co.ge.gestorDocumental.estructural.Documento;
 import co.ge.gestorDocumental.modelo.ServicioCarpeta;
 import co.ge.gestorDocumental.modelo.ServicioDocumento;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -28,8 +29,8 @@ public class CarpetaRESTController {
     }
 
     @PostMapping
-    public boolean agregar(@RequestBody Carpeta carpeta){
-        return servicioCarpeta.agregar(carpeta);
+    public ResponseEntity<Carpeta> agregar(@RequestBody Carpeta carpeta){
+        return  ResponseEntity.ok().body(servicioCarpeta.agregar(carpeta));
     }
 
     @DeleteMapping(path = "/{carpeta}")
