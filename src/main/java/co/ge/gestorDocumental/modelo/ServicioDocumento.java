@@ -28,7 +28,7 @@ public class ServicioDocumento {
         return instancia;
     }
 
-    public boolean agregar(Documento documento){
+    public Documento agregar(Documento documento){
         boolean respuesta = false;
         try {
             ApiFuture<WriteResult> future = conexion.getDb().collection("carpetas")
@@ -36,11 +36,11 @@ public class ServicioDocumento {
                     .collection("archivos")
                     .document(documento.getNombre()).set(documento);
             System.out.println("Update time : " + future.get().getUpdateTime());
-            respuesta=true;
+            return documento;
         }catch (Exception e){
             e.printStackTrace();
         }
-        return respuesta;
+        return null;
     }
 
     public boolean eliminar(Documento documento){

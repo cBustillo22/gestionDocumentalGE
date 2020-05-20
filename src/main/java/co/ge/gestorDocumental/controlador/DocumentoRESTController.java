@@ -3,6 +3,8 @@ package co.ge.gestorDocumental.controlador;
 import co.ge.gestorDocumental.estructural.Documento;
 import co.ge.gestorDocumental.modelo.ServicioCarpeta;
 import co.ge.gestorDocumental.modelo.ServicioDocumento;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.StreamingHttpOutputMessage;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,8 +32,8 @@ public class DocumentoRESTController {
     }
 
     @PostMapping
-    public boolean añadir(@RequestBody Documento documento){
-        return servicioDocumento.agregar(documento);
+    public ResponseEntity<Documento> añadir(@RequestBody Documento documento){
+        return ResponseEntity.ok().body(servicioDocumento.agregar(documento));
     }
 
     @PutMapping

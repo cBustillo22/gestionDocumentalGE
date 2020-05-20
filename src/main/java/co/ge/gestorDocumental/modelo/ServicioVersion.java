@@ -31,7 +31,7 @@ public class ServicioVersion {
         return instancia;
     }
 
-    public boolean agregar(Version versionDocumento, Documento documentoRaiz){
+    public Version agregar(Version versionDocumento, Documento documentoRaiz){
         boolean respuesta = false;
         try {
             Version versionMayor = obtenerVersionMayor(documentoRaiz);
@@ -52,11 +52,11 @@ public class ServicioVersion {
                     .document(Integer.toString(versionDocumento.getVersion()))
                     .set(versionDocumento);
             System.out.println("Update time : " + future.get().getUpdateTime());
-            respuesta=true;
+            return versionDocumento;
         }catch (Exception e){
             e.printStackTrace();
         }
-        return respuesta;
+        return null;
     }
 
     public boolean eliminar(Version versionDocumento, Documento documentoRaiz){
